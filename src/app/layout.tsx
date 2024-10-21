@@ -6,17 +6,7 @@ import {ThemeProvider} from '@mui/material/styles';
 import {ProjectProvider} from '@/hooks/project/project-context';
 import {Providers} from '@/app/api/auth/providers/Providers';
 import SessionGuard from '@/components/SessionGuard/SessionGuard';
-
-const geistSans = localFont({
-  src: './fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-  weight: '100 900',
-});
-const geistMono = localFont({
-  src: './fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-  weight: '100 900',
-});
+import React from 'react';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -26,7 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body>
         <ProjectProvider>
           <Providers>
             <SessionGuard>
