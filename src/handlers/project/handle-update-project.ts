@@ -1,19 +1,27 @@
-import {FormikHelpers} from 'formik';
 import {Project} from '@/interfaces/Iproject';
-import {createProject} from '@/services/project/project-service';
+import {  updateProject } from '@/services/project/project-service';
 import React from 'react';
+import { FormikHelpers } from 'formik';
 
-export async function handleCreateProject(
-  values: { projectName: string; },
-  actions: FormikHelpers<{ projectName: string }>,
+export async function handleUpdateProject(
+  id: number,
+  projectName: string,
+  actions: FormikHelpers<{
+    projectName: string
+  }>,
   setProjects: React.Dispatch<React.SetStateAction<Project[]>>,
 ) {
-  createProject(values.projectName)
+  await updateProject(id, projectName)
     .then((response) => {
       return response;
     })
     .then((data) => {
-      setProjects(prevProjects => [...prevProjects, { ...data.data }]);
+      setProjects((prevProjects) => prevProjects.map(project => {
+        if (project.id === id) {
+          return { ...project, name: data.data.name };
+        }
+        return project;
+      }));
     });
   actions.resetForm();
 }

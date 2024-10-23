@@ -18,9 +18,10 @@ export const createProject = async (
 };
 
 export const updateProject = async (
+  id: number,
   projectName: string,
 ) => {
-  return axiosAuth.patch<Project>('/project', {
+  return axiosAuth.patch<Project>(`/project/${id}`, {
     name: projectName,
     userId: 1
   });

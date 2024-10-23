@@ -1,5 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import * as React from 'react';
+import theme from '@/styles/theme';
 
 interface ConfirmationDialogProps {
   handleDelete: () => void;
@@ -28,8 +29,8 @@ export default function ConfirmationDialog({
       <DialogContent>
         <Typography
           sx={{
-            fontFamily: 'monospace',
-            color: '#706e6e',
+            fontFamily: theme.typography.fontFamily,
+            color: theme.palette.primary.dark,
             fontSize: '12px',
             flexGrow: 1,
             maxWidth: '180px',
