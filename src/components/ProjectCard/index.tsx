@@ -1,3 +1,4 @@
+'use client';
 import {Card, CardContent, IconButton} from '@mui/material';
 import Typography from '@mui/material/Typography';
 import theme from '@/styles/theme';
@@ -10,7 +11,6 @@ import React from 'react';
 import {useProjectContext} from '@/hooks/project/project-context';
 import handleCloseDialog from '@/handlers/dialog/handle-close-dialog';
 import ConfirmationDialog from '@/components/common/ConfirmationDialog';
-
 import UpdateProjectDialog from '@/components/UpdateProjectDialog';
 import handleDeleteProject from '@/handlers/project/handle-delete-project';
 

@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import localFont from 'next/font/local';
 import './globals.css';
 import theme from '@/styles/theme';
 import {ThemeProvider} from '@mui/material/styles';
@@ -7,6 +6,7 @@ import {ProjectProvider} from '@/hooks/project/project-context';
 import {Providers} from '@/app/api/auth/providers/Providers';
 import SessionGuard from '@/components/SessionGuard/SessionGuard';
 import React from 'react';
+import { TableProvider } from '@/hooks/table/table-context';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -18,13 +18,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <ProjectProvider>
-          <Providers>
-            <SessionGuard>
-              <ThemeProvider theme={theme}>
-                {children}
-              </ThemeProvider>
-            </SessionGuard>
-          </Providers>
+          <TableProvider>
+            <Providers>
+              <SessionGuard>
+                <ThemeProvider theme={theme}>
+                  {children}
+                </ThemeProvider>
+              </SessionGuard>
+            </Providers>
+          </TableProvider>
         </ProjectProvider>
       </body>
     </html>

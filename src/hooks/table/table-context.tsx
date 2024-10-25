@@ -1,32 +1,32 @@
 'use client';
-import {Project} from '@/interfaces/Iproject';
 import React, {createContext, ReactNode, useContext, useState} from 'react';
+import { Table } from '@/interfaces/Itable';
 
-interface ProjectContextType {
-  projects: Project[];
-  setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
+interface TableContextType {
+  tables: Table[];
+  setTables: React.Dispatch<React.SetStateAction<Table[]>>;
 }
 
-const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
+const TableContext = createContext<TableContextType | undefined>(undefined);
 
-export const useProjectContext = () => {
-  const context = useContext(ProjectContext);
+export const useTableContext = () => {
+  const context = useContext(TableContext);
   if (!context) {
-    throw new Error('useProjectContext must be used within a ProjectProvider');
+    throw new Error('useTableContext must be used within a TableProvider');
   }
   return context;
 };
 
-interface ProjectProviderProps {
+interface TableProviderProps {
   children: ReactNode;
 }
 
-export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }: ProjectProviderProps) => {
-  const [projects, setProjects] = useState<Project[]>([]);
+export const TableProvider: React.FC<TableProviderProps> = ({ children }: TableProviderProps) => {
+  const [tables, setTables] = useState<Table[]>([]);
 
   return (
-    <ProjectContext.Provider value={{ projects, setProjects }}>
+    <TableContext.Provider value={{ tables, setTables }}>
       {children}
-    </ProjectContext.Provider>
+    </TableContext.Provider>
   );
 };
