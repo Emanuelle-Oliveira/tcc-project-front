@@ -1,5 +1,5 @@
 import {axiosAuth} from '@/services/axios/axios';
-import { Table } from '@/interfaces/Itable';
+import {CreateTableDto, Table} from '@/interfaces/Itable';
 
 export const getTableByProject = async (
   projectId: number
@@ -10,6 +10,16 @@ export const getTableByProject = async (
     });
 };
 
+export const createTable = async (
+  values: CreateTableDto
+) => {
+  return axiosAuth.post<Table>('/table', {
+    name: values.tableName,
+    alias: values.tableAlias,
+    projectId: values.projectId,
+  });
+};
+
 // export const getAllProject = async () => {
 //   return axiosAuth.get<Project[]>('/project')
 //     .then((response): Project[] => {
@@ -17,14 +27,6 @@ export const getTableByProject = async (
 //     });
 // };
 //
-// export const createProject = async (
-//   projectName: string,
-// ) => {
-//   return axiosAuth.post<Project>('/project', {
-//     name: projectName,
-//     userId: 1
-//   });
-// };
 //
 // export const updateProject = async (
 //   id: number,

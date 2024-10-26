@@ -5,5 +5,11 @@ export interface Table {
   name: string;
   alias: string;
   projectId: number;
-  columns?: Column[] | null;
+  xcolumns?: Column[] | null;
+}
+
+export interface CreateTableDto {
+  tableName: string;
+  tableAlias: string;
+  projectId: number;
 }

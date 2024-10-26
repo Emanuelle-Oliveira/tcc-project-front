@@ -1,36 +1,43 @@
-import {useProjectContext} from '@/hooks/project/project-context';
+import {useTableContext} from '@/hooks/table/table-context';
 import {Button, Dialog, DialogActions, DialogContent, TextField} from '@mui/material';
 import {Formik} from 'formik';
 import Box from '@mui/material/Box';
-import {handleCreateProject} from '@/handlers/project/handle-create-project';
+import {handleCreateTable} from '@/handlers/table/handle-create-table';
 
-interface CreateProjectDialogProps {
+interface CreateTableDialogProps {
   handleClose: () => void;
   open: boolean;
+  projectId: number;
 }
 
 type Error = {
-  projectName?: string;
+  tableName?: string;
+  tableAlias?: string;
 };
 
-export default function CreateProjectDialog({ handleClose, open }: CreateProjectDialogProps) {
-  const { projects, setProjects } = useProjectContext();
+export default function CreateTableDialog({ handleClose, open, projectId }: CreateTableDialogProps) {
+  const { tables, setTables } = useTableContext();
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='md'>
       <Formik
         initialValues={{
-          projectName: ''
+          tableName: '',
+          tableAlias: '',
+          projectId: projectId
         }}
         validate={(values) => {
           const errors: Error = {};
-          if (!values.projectName) {
-            errors.projectName = 'Nome obrigatório';
+          if (!values.tableName) {
+            errors.tableName = 'Nome obrigatório';
+          }
+          if (!values.tableAlias) {
+            errors.tableName = 'Apelido obrigatório';
           }
           return errors;
         }}
         onSubmit={async (values, actions) => {
-          await handleCreateProject(values, actions, setProjects);
+          await handleCreateTable(values, actions, setTables);
           handleClose();
         }}
       >
@@ -41,15 +48,29 @@ export default function CreateProjectDialog({ handleClose, open }: CreateProject
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                   <TextField
                     sx={{ width: '500px', marginBottom: '10px', marginTop: '10px' }}
-                    label='Nome do Projeto'
+                    label='Nome do Tabela'
                     variant='outlined'
                     size='small'
-                    value={values.projectName}
+                    value={values.tableName}
                     onChange={(value) => {
-                      setFieldValue('projectName', value.target.value);
+                      setFieldValue('tableName', value.target.value);
                     }}
-                    error={touched.projectName && !!errors.projectName}
-                    helperText={touched.projectName && errors.projectName}
+                    error={touched.tableName && !!errors.tableName}
+                    helperText={touched.tableName && errors.tableName}
+                  />
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <TextField
+                    sx={{ width: '500px', marginBottom: '10px', marginTop: '10px' }}
+                    label='Apelido da Tabela'
+                    variant='outlined'
+                    size='small'
+                    value={values.tableAlias}
+                    onChange={(value) => {
+                      setFieldValue('tableAlias', value.target.value);
+                    }}
+                    error={touched.tableAlias && !!errors.tableAlias}
+                    helperText={touched.tableAlias && errors.tableAlias}
                   />
                 </Box>
               </DialogContent>

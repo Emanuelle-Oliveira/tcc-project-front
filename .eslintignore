@@ -1,2 +1,3 @@
 .next
 node_modules/src/pages/_app.tsx
+/src/pages/project/\[id\].tsx

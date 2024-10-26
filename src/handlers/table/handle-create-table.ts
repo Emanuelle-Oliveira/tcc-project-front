@@ -1,19 +1,19 @@
 import {FormikHelpers} from 'formik';
-import {Project} from '@/interfaces/Iproject';
-import {createProject} from '@/services/project/project-service';
+import {CreateTableDto, Table} from '@/interfaces/Itable';
+import {createTable} from '@/services/table/table-service';
 import React from 'react';
 
-export async function handleCreateProject(
-  values: { projectName: string; },
-  actions: FormikHelpers<{ projectName: string }>,
-  setProjects: React.Dispatch<React.SetStateAction<Project[]>>,
+export async function handleCreateTable(
+  values: CreateTableDto,
+  actions: FormikHelpers<CreateTableDto>,
+  setTables: React.Dispatch<React.SetStateAction<Table[]>>,
 ) {
-  createProject(values.projectName)
+  createTable(values)
     .then((response) => {
       return response;
     })
     .then((data) => {
-      setProjects(prevProjects => [...prevProjects, { ...data.data }]);
+      setTables(prevTables => [...prevTables, { ...data.data }]);
     });
   actions.resetForm();
 }
