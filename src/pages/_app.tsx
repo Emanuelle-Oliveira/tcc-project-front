@@ -1,6 +1,24 @@
-import "@/styles/globals.css";
-import type { AppProps } from "next/app";
+import type { AppProps } from 'next/app';
+import {ProjectProvider} from '@/hooks/project/project-context';
+import {ThemeProvider} from '@mui/material/styles';
+import theme from '@/styles/theme';
+import SessionGuard from '@/components/SessionGuard/SessionGuard';
+import { Providers } from './api/auth/providers/Providers';
+import {CssBaseline} from '@mui/material';
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  return (
+    <ProjectProvider>
+      {/*<TableProvider>*/}
+      <Providers>
+        <SessionGuard>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </SessionGuard>
+      </Providers>
+      {/*</TableProvider>*/}
+    </ProjectProvider>
+  );
 }
