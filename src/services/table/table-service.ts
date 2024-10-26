@@ -1,5 +1,5 @@
 import {axiosAuth} from '@/services/axios/axios';
-import {CreateTableDto, Table} from '@/interfaces/Itable';
+import {CreateTableDto, Table, UpdateTableDto} from '@/interfaces/Itable';
 
 export const getTableByProject = async (
   projectId: number
@@ -20,22 +20,27 @@ export const createTable = async (
   });
 };
 
+export const updateTable = async (
+  values: UpdateTableDto
+) => {
+  return axiosAuth.patch<Table>(`/table/${values.id}`, {
+    name: values.tableName,
+    alias: values.tableAlias,
+    projectId: values.projectId
+  });
+};
+
+export const deleteTable = async (
+  id: number,
+) => {
+  return axiosAuth.delete<Table>(`/table/${id}`);
+};
+
 // export const getAllProject = async () => {
 //   return axiosAuth.get<Project[]>('/project')
 //     .then((response): Project[] => {
 //       return response.data;
 //     });
-// };
-//
-//
-// export const updateProject = async (
-//   id: number,
-//   projectName: string,
-// ) => {
-//   return axiosAuth.patch<Project>(`/project/${id}`, {
-//     name: projectName,
-//     userId: 1
-//   });
 // };
 //
 // export const deleteProject = async (

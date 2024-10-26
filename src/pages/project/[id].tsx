@@ -15,6 +15,8 @@ import handleOpenDialog from '@/handlers/dialog/handle-open-dialog';
 import CreateProjectDialog from '@/components/CreateProjectDialog';
 import handleCloseDialog from '@/handlers/dialog/handle-close-dialog';
 import CreateTableDialog from '@/components/CreateTableDialog';
+import {Grid} from '@mui/system';
+import TableCard from '@/components/TableCard';
 
 export default function ProjectPage() {
   const router = useRouter();
@@ -47,18 +49,29 @@ export default function ProjectPage() {
   return (
     <>
       <Navbar />
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' } }>
-        <Box sx={{ flex: 1, marginRight: 2, padding: 2 }}>
-          {tables.map((table) => (
-            <div key={table.id}>
-              <h4>{table.name} - {table.alias}</h4>
-              {table.xcolumns?.map((column) => (
-                <p key={column.id}>
-                  {column.name}: {column.alias}
-                </p>
-              ))}
-            </div>
-          ))}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', height: '100vh' } }>
+        <Box sx={{ flex: 1, marginRight: 2, padding: 2, overflowX: 'auto'}}>
+          <Grid container spacing={2} style={{ flexWrap: 'nowrap' }}>
+            {tables.map((table) => (
+              <Grid key={table.id} style={{ display: 'inline-flex', width: '250px', alignSelf: 'flex-start', backgroundColor: theme.palette.background.paper }}>
+                <TableCard
+                  id={table.id}
+                  tableName={table.name}
+                  tableAlias={table.alias}
+                  columns={table.xcolumns}
+                  projectId={Number(projectId)}
+                  />
+              </Grid>
+              // <div key={table.id}>
+              //   <h4>{table.name} - {table.alias}</h4>
+              //   {table.xcolumns?.map((column) => (
+              //     <p key={column.id}>
+              //       {column.name}: {column.alias}
+              //     </p>
+              //   ))}
+              // </div>
+            ))}
+          </Grid>
         </Box>
 
         <Box
@@ -69,7 +82,8 @@ export default function ProjectPage() {
             alignItems: 'center',
             padding: 2,
             bgcolor: 'background.paper',
-            gap: 2
+            gap: 2,
+            height: '100vh'
           }}
         >
           <Typography variant="h6" align={"left"} sx={{ mb: 2, fontWeight: 700}}>

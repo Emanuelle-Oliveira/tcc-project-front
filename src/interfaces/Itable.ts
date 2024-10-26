@@ -13,3 +13,10 @@ export interface CreateTableDto {
   tableAlias: string;
   projectId: number;
 }
+
+export interface UpdateTableDto {
+  id: number;
+  tableName: string;
+  tableAlias: string;
+  projectId: number;
+}
