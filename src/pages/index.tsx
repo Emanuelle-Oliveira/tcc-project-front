@@ -1,4 +1,4 @@
-import Login from '@/components/Login';
+import Login from '../components/auth/Login';
 import {useSession} from 'next-auth/react';
 import ProjectsPage from '@/pages/projects';
 

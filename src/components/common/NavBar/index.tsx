@@ -5,7 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import theme from '@/styles/theme';
-import Logout from '@/components/Logout';
+import Logout from '../../auth/Logout';
 
 export default function Navbar() {
   return (

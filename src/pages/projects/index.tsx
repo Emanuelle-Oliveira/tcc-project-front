@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import theme from '@/styles/theme';
-import Navbar from '@/components/NavBar';
+import Navbar from '../../components/common/NavBar';
 import React, {useEffect} from 'react';
 import Typography from '@mui/material/Typography';
 import {Container, IconButton} from '@mui/material';
@@ -8,11 +8,11 @@ import {useProjectContext} from '@/hooks/project/project-context';
 import {Project} from '@/interfaces/Iproject';
 import {getAllProject} from '@/services/project/project-service';
 import {Grid} from '@mui/system';
-import ProjectCard from '@/components/ProjectCard';
+import ProjectCard from '@/components/project/ProjectCard';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import handleCloseDialog from '@/handlers/dialog/handle-close-dialog';
 import handleOpenDialog from '@/handlers/dialog/handle-open-dialog';
-import CreateProjectDialog from '@/components/CreateProjectDialog';
+import CreateProjectDialog from '@/components/project/CreateProjectDialog';
 import {useSession} from 'next-auth/react';
 import useAxiosAuth from '@/services/auth/hooks/useAxiosAuth';
 

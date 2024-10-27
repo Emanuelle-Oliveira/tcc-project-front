@@ -10,7 +10,7 @@ import React from 'react';
 import {useProjectContext} from '@/hooks/project/project-context';
 import handleCloseDialog from '@/handlers/dialog/handle-close-dialog';
 import ConfirmationDialog from '@/components/common/ConfirmationDialog';
-import UpdateProjectDialog from '@/components/UpdateProjectDialog';
+import UpdateProjectDialog from '../UpdateProjectDialog';
 import handleDeleteProject from '@/handlers/project/handle-delete-project';
 
 interface ProjectCardProps {
