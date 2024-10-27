@@ -17,12 +17,14 @@ import handleCloseDialog from '@/handlers/dialog/handle-close-dialog';
 import CreateTableDialog from '../../components/table/CreateTableDialog';
 import {Grid} from '@mui/system';
 import TableCard from '../../components/table/TableCard';
+import CreateRelationshipDialog from '@/components/relationship/CreateRelationshipDialog';
 
 export default function ProjectPage() {
   const router = useRouter();
   const { tables, setTables } = useTableContext();
   const { data: session, status } = useSession();
-  const [openCreate, setOpenCreate] = React.useState<boolean>(false);
+  const [openCreateTable, setOpenCreateTable] = React.useState<boolean>(false);
+  const [openCreateRelationship, setOpenCreateRelationship] = React.useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const axiosAuth = useAxiosAuth();
   const projectId = router.query.id;
@@ -91,7 +93,7 @@ export default function ProjectPage() {
               color: theme.palette.primary.dark,
             }}}
             onClick={() => {
-              handleOpenDialog(setOpenCreate);
+              handleOpenDialog(setOpenCreateTable);
             }}
           >
             Adicionar Tabela
@@ -106,6 +108,9 @@ export default function ProjectPage() {
                 bgcolor: theme.palette.secondary.main,
                 color: theme.palette.primary.dark,
               }}}
+            onClick={() => {
+              handleOpenDialog(setOpenCreateRelationship);
+            }}
           >
             Adicionar Relacionamento
           </Button>
@@ -127,9 +132,17 @@ export default function ProjectPage() {
 
       <CreateTableDialog
         handleClose={() => {
-          handleCloseDialog(setOpenCreate);
+          handleCloseDialog(setOpenCreateTable);
         }}
-        open={openCreate}
+        open={openCreateTable}
+        projectId={Number(projectId)}
+      />
+
+      <CreateRelationshipDialog
+        handleClose={() => {
+          handleCloseDialog(setOpenCreateRelationship);
+        }}
+        open={openCreateRelationship}
         projectId={Number(projectId)}
       />
     </>
