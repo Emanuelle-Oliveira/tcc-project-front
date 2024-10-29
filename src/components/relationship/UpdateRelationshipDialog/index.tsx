@@ -5,12 +5,19 @@ import {useTableContext} from '@/hooks/table/table-context';
 import Typography from '@mui/material/Typography';
 import theme from '@/styles/theme';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {handleCreateRelationship} from '@/handlers/relationship/handle-create-relationship';
+import {RelatedKeys} from '@/interfaces/Irelatedkeys';
+import {handleUpdateRelationship} from '@/handlers/relationship/handle-update-relationship';
 
-interface CreateRelationshipDialogProps {
+interface UpdateRelationshipDialogProps {
   handleClose: () => void;
   open: boolean;
-  projectId: number;
+  id: number;
+  firstTableId: number;
+  secondTableId: number;
+  firstTableCardinality: string;
+  secondTableCardinality: string;
+  relatedKeys: RelatedKeys[];
+  tableId: number;
 }
 
 type Error = {
@@ -20,18 +27,19 @@ type Error = {
   secondTableCardinality?: string;
 };
 
-export default function CreateRelationshipDialog({ handleClose, open }: CreateRelationshipDialogProps) {
+export default function UpdateRelationshipDialog({ handleClose, open, id, firstTableId, secondTableId, firstTableCardinality, secondTableCardinality, relatedKeys, tableId}: UpdateRelationshipDialogProps) {
   const { tables, setTables } = useTableContext();
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='md'>
       <Formik
         initialValues={{
-          firstTableId: null,
-          secondTableId: null,
-          firstTableCardinality: '',
-          secondTableCardinality: '',
-          relatedKeys: [{ firstColumnId: null, secondColumnId: null }]
+          id: id,
+          firstTableId: firstTableId,
+          secondTableId: secondTableId,
+          firstTableCardinality: firstTableCardinality,
+          secondTableCardinality: secondTableCardinality,
+          relatedKeys: relatedKeys
         }}
         validate={(values) => {
           const errors: Error = {};
@@ -56,7 +64,7 @@ export default function CreateRelationshipDialog({ handleClose, open }: CreateRe
           return errors;
         }}
         onSubmit={async (values, actions) => {
-          await handleCreateRelationship(values, actions, tables, setTables);
+          await handleUpdateRelationship(values, actions, tables, setTables);
           handleClose();
         }}
       >
@@ -97,6 +105,7 @@ export default function CreateRelationshipDialog({ handleClose, open }: CreateRe
                         shrink: true,
                         sx: { backgroundColor: 'white', paddingX: '5px' }
                       }}
+                      disabled
                     >
                       {tables.map((table) => (
                         <MenuItem key={table.id} value={table.id} sx={{fontSize: '12px'}}>
@@ -114,6 +123,7 @@ export default function CreateRelationshipDialog({ handleClose, open }: CreateRe
                       sx={{ width: '245px', marginBottom: '10px', marginTop: '10px' }}
                       InputProps={{ sx: { fontSize: '12px' } }}
                       InputLabelProps={{ shrink: true, sx: { backgroundColor: 'white', paddingX: '5px' }}}
+                      disabled
                     >
                       {tables.map((table) => (
                         <MenuItem key={table.id} value={table.id} sx={{fontSize: '12px'}}>

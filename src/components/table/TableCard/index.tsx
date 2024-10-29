@@ -14,12 +14,16 @@ import handleDeleteTable from '@/handlers/table/handle-delete-table';
 import ColumnCard from '../../column/ColumnCard';
 import theme from '@/styles/theme';
 import CreateColumnDialog from '../../column/CreateColumnDialog';
+import {Relationship} from '@/interfaces/Irelationship';
+import RelationshipCard from '@/components/relationship/RelationshipCard';
 
 interface TableCardProps {
   id: number;
   tableName: string;
   tableAlias: string;
   columns?: Column[] | null;
+  firstRelationships?: Relationship[] | null;
+  secondRelationships?: Relationship[] | null;
   projectId: number
 }
 
@@ -33,7 +37,7 @@ const cardContentStyle: CSSProperties = {
   padding: 0
 };
 
-export default function TableCard({ id, tableName, tableAlias, columns, projectId }: TableCardProps) {
+export default function TableCard({ id, tableName, tableAlias, columns, projectId, firstRelationships, secondRelationships }: TableCardProps) {
   const { tables, setTables } = useTableContext();
   const [openUpdate, setOpenUpdate] = React.useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -104,6 +108,50 @@ export default function TableCard({ id, tableName, tableAlias, columns, projectI
           >
             Adicionar Coluna
           </Button>
+          
+          {((firstRelationships ?? []).length > 0 || (secondRelationships ?? []).length > 0) && (
+            <Card variant='outlined' sx={{ borderRadius: '0px', border: '0px', height: '30px', width: '100%', bgcolor: theme.palette.primary.main }}>
+              <CardContent sx={{ padding: '10px', display: 'flex', alignItems: 'center', alignContent: 'center' }}>
+                <Typography
+                  sx={{
+                    fontSize: '11px',
+                    flexGrow: 1,
+                    maxWidth: '180px',
+                    lineHeight: '1',
+                    fontWeight: 700,
+                    color: theme.palette.background.paper
+                  }}>
+                Relacionamentos
+                </Typography>
+              </CardContent>
+            </Card>
+          )}
+
+          {firstRelationships?.map((relationship) => (
+            <RelationshipCard
+              key={relationship.id}
+              id={relationship.id}
+              firstTableId={relationship.firstTableId}
+              secondTableId={relationship.secondTableId}
+              firstTableCardinality={relationship.firstTableCardinality}
+              secondTableCardinality={relationship.secondTableCardinality}
+              relatedKeys={relationship.relatedKeys}
+              tableId={id}
+            />
+          ))}
+
+          {secondRelationships?.map((relationship) => (
+            <RelationshipCard
+              key={relationship.id}
+              id={relationship.id}
+              firstTableId={relationship.firstTableId}
+              secondTableId={relationship.secondTableId}
+              firstTableCardinality={relationship.firstTableCardinality}
+              secondTableCardinality={relationship.secondTableCardinality}
+              relatedKeys={relationship.relatedKeys}
+              tableId={id}
+            />
+          ))}
         </CardContent>
       </Card>
 

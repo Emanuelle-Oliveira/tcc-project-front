@@ -61,6 +61,8 @@ export default function ProjectPage() {
                   tableName={table.name}
                   tableAlias={table.alias}
                   columns={table.xcolumns}
+                  firstRelationships={table.firstRelationships}
+                  secondRelationships={table.secondRelationships}
                   projectId={Number(projectId)}
                   />
               </Grid>

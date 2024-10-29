@@ -16,3 +16,12 @@ export interface CreateRelationshipDto {
   secondTableCardinality: string;
   relatedKeys: { firstColumnId: null; secondColumnId: null; }[];
 }
+
+export interface UpdateRelationshipDto {
+  id: number;
+  firstTableId: number;
+  secondTableId: number;
+  firstTableCardinality: string;
+  secondTableCardinality: string;
+  relatedKeys: RelatedKeys[];
+}

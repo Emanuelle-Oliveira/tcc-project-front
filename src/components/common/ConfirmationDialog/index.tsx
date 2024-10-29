@@ -31,8 +31,7 @@ export default function ConfirmationDialog({
           sx={{
             color: theme.palette.primary.dark,
             fontSize: '12px',
-            flexGrow: 1,
-            maxWidth: '180px',
+            flexGrow: 1
           }}>
           {title}
         </Typography>
