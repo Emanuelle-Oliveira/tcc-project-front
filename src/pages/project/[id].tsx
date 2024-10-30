@@ -18,6 +18,7 @@ import CreateTableDialog from '../../components/table/CreateTableDialog';
 import {Grid} from '@mui/system';
 import TableCard from '../../components/table/TableCard';
 import CreateRelationshipDialog from '@/components/relationship/CreateRelationshipDialog';
+import CreateQueryDialog from '@/components/query/CreateQueryDialog';
 
 export default function ProjectPage() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function ProjectPage() {
   const { data: session, status } = useSession();
   const [openCreateTable, setOpenCreateTable] = React.useState<boolean>(false);
   const [openCreateRelationship, setOpenCreateRelationship] = React.useState<boolean>(false);
+  const [openCreateQuery, setOpenCreateQuery] = React.useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const axiosAuth = useAxiosAuth();
   const projectId = router.query.id;
@@ -126,8 +128,24 @@ export default function ProjectPage() {
                 bgcolor: theme.palette.secondary.main,
                 color: theme.palette.primary.dark,
               }}}
+            onClick={() => {
+              handleOpenDialog(setOpenCreateQuery);
+            }}
           >
             Gerar Query
+          </Button>
+
+          <Button
+            variant="contained"
+            sx={{
+              width: '100%',
+              fontSize: '12px',
+              '&:hover': {
+                bgcolor: theme.palette.secondary.main,
+                color: theme.palette.primary.dark,
+              }}}
+          >
+            Histórico de Queries
           </Button>
         </Box>
       </Box>
@@ -146,6 +164,13 @@ export default function ProjectPage() {
         }}
         open={openCreateRelationship}
         projectId={Number(projectId)}
+      />
+
+      <CreateQueryDialog
+        handleClose={() => {
+          handleCloseDialog(setOpenCreateQuery);
+        }}
+        open={openCreateQuery}
       />
     </>
   );
