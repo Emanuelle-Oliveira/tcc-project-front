@@ -28,7 +28,7 @@ export async function handleCreateQuery(
 
   const mainTable = tables[0].tableId as number;
 
-  await createQuery(
+  return await createQuery(
     values.name,
     values.dbType,
     '',
@@ -36,6 +36,4 @@ export async function handleCreateQuery(
     tables,
     []
   );
-
-  actions.resetForm();
 }

@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {useEffect, useState} from 'react';
 import {handleCreateQuery} from '@/handlers/query/handle-create-query';
 import {SelectedTable} from '@/interfaces/Iselectedtable';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 interface CreateQueryDialogProps {
   handleClose: () => void;
@@ -56,7 +57,7 @@ export default function CreateQueryDialog({ handleClose, open }: CreateQueryDial
         columns: table.columns.filter(columnId => columnId !== null)
       }));
     setSelectedTables(filteredTables);
-    handleClose();
+    //handleClose();
   };
 
   const handleRemove = (index: number) => {
@@ -65,12 +66,17 @@ export default function CreateQueryDialog({ handleClose, open }: CreateQueryDial
     setSelectedTables(newSelectedTables);
   };
 
+  const handleCopyQuery = (query: string) => {
+    navigator.clipboard.writeText(query);
+  };
+
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='md'>
       <Formik
         initialValues={{
           name: '',
           dbType: 'SqlServer',
+          query: ''
         }}
         validate={(values) => {
           const errors: Error = {};
@@ -84,8 +90,12 @@ export default function CreateQueryDialog({ handleClose, open }: CreateQueryDial
         }}
         onSubmit={async (values, actions) => {
           handleSave();
-          await handleCreateQuery(values, actions, selectedTables);
-          handleClose();
+          const response = await handleCreateQuery(values, actions, selectedTables);
+          console.log(response);
+
+          if (response?.query) {
+            actions.setFieldValue('query', response.query);
+          }
         }}
       >
         {({ values, errors, touched, handleSubmit, setFieldValue }) => {
@@ -199,11 +209,31 @@ export default function CreateQueryDialog({ handleClose, open }: CreateQueryDial
                   >
                     Adicionar Novo Campo
                   </Button>
+
+                  <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
+                    <TextField
+                      label="Query"
+                      value={values.query}
+                      onChange={(event) => setFieldValue('query', event.target.value)}
+                      sx={{ width: '500px', marginBottom: '10px', marginTop: '10px' }}
+                      InputProps={{
+                        sx: { fontSize: '12px' },
+                        readOnly: true
+                      }}
+                      InputLabelProps={{
+                        sx: { backgroundColor: 'white', paddingX: '5px' }
+                      }}
+                      disabled
+                    />
+                    <IconButton onClick={() => handleCopyQuery(values.query)} aria-label="Copiar Query">
+                      <ContentCopyIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
                 </Box>
               </DialogContent>
 
               <DialogActions>
-                <Button onClick={handleClose}>Cancelar</Button>
+                <Button onClick={handleClose}>Fechar</Button>
                 <Button
                   onClick={() => {
                     handleSubmit();

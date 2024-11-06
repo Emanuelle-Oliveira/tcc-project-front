@@ -1,6 +1,7 @@
 import {QueryTable} from '@/interfaces/Iquerytable';
 
 export interface Query {
+  id: number;
   name: string;
   dbType: string;
   query: string;

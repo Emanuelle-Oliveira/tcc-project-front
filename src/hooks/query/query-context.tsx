@@ -1,31 +1,31 @@
 import React, {createContext, ReactNode, useContext, useState} from 'react';
-import { Table } from '@/interfaces/Itable';
+import {Query} from '@/interfaces/Iquery';
 
-interface TableContextType {
-  tables: Table[];
-  setTables: React.Dispatch<React.SetStateAction<Table[]>>;
+interface QueryContextType {
+  queries: Query[];
+  setQueries: React.Dispatch<React.SetStateAction<Query[]>>;
 }
 
-const TableContext = createContext<TableContextType | undefined>(undefined);
+const QueryContext = createContext<QueryContextType | undefined>(undefined);
 
-export const useTableContext = () => {
-  const context = useContext(TableContext);
+export const useQueryContext = () => {
+  const context = useContext(QueryContext);
   if (!context) {
-    throw new Error('useTableContext must be used within a TableProvider');
+    throw new Error('useQueryContext must be used within a QueryProvider');
   }
   return context;
 };
 
-interface TableProviderProps {
+interface QueryProviderProps {
   children: ReactNode;
 }
 
-export const TableProvider: React.FC<TableProviderProps> = ({ children }: TableProviderProps) => {
-  const [tables, setTables] = useState<Table[]>([]);
+export const QueryProvider: React.FC<QueryProviderProps> = ({ children }: QueryProviderProps) => {
+  const [queries, setQueries] = useState<Query[]>([]);
 
   return (
-    <TableContext.Provider value={{ tables, setTables }}>
+    <QueryContext.Provider value={{ queries, setQueries }}>
       {children}
-    </TableContext.Provider>
+    </QueryContext.Provider>
   );
 };

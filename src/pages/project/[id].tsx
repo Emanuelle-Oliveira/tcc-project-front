@@ -19,6 +19,7 @@ import {Grid} from '@mui/system';
 import TableCard from '../../components/table/TableCard';
 import CreateRelationshipDialog from '@/components/relationship/CreateRelationshipDialog';
 import CreateQueryDialog from '@/components/query/CreateQueryDialog';
+import GetQueryDialog from '@/components/query/GetQueryDialog';
 
 export default function ProjectPage() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function ProjectPage() {
   const [openCreateTable, setOpenCreateTable] = React.useState<boolean>(false);
   const [openCreateRelationship, setOpenCreateRelationship] = React.useState<boolean>(false);
   const [openCreateQuery, setOpenCreateQuery] = React.useState<boolean>(false);
+  const [openGetQuery, setOpenGetQuery] = React.useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const axiosAuth = useAxiosAuth();
   const projectId = router.query.id;
@@ -144,6 +146,9 @@ export default function ProjectPage() {
                 bgcolor: theme.palette.secondary.main,
                 color: theme.palette.primary.dark,
               }}}
+            onClick={() => {
+              handleOpenDialog(setOpenGetQuery);
+            }}
           >
             Histórico de Queries
           </Button>
@@ -171,6 +176,14 @@ export default function ProjectPage() {
           handleCloseDialog(setOpenCreateQuery);
         }}
         open={openCreateQuery}
+      />
+
+      <GetQueryDialog
+        handleClose={() => {
+          handleCloseDialog(setOpenGetQuery);
+        }}
+        open={openGetQuery}
+        projectId={Number(projectId)}
       />
     </>
   );

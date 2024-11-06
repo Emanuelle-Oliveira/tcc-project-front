@@ -6,19 +6,22 @@ import SessionGuard from '@/components/auth/SessionGuard/SessionGuard';
 import { Providers } from './api/auth/providers/Providers';
 import {CssBaseline} from '@mui/material';
 import {TableProvider} from '@/hooks/table/table-context';
+import {QueryProvider} from '@/hooks/query/query-context';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ProjectProvider>
       <TableProvider>
-        <Providers>
-          <SessionGuard>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <Component {...pageProps} />
-            </ThemeProvider>
-          </SessionGuard>
-        </Providers>
+        <QueryProvider>
+          <Providers>
+            <SessionGuard>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <Component {...pageProps} />
+              </ThemeProvider>
+            </SessionGuard>
+          </Providers>
+        </QueryProvider>
       </TableProvider>
     </ProjectProvider>
   );

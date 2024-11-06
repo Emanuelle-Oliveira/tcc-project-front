@@ -1,221 +1,123 @@
-import {Button, Dialog, DialogActions, DialogContent, IconButton, MenuItem, TextField} from '@mui/material';
-import {Formik} from 'formik';
-import Box from '@mui/material/Box';
-import {useTableContext} from '@/hooks/table/table-context';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle, IconButton,
+  Table, TableBody,
+  TableCell,
+  TableHead,
+  TableRow
+} from '@mui/material';
+import {useEffect} from 'react';
+import {getQueryByProject} from '@/services/query/query-service';
+import {Query} from '@/interfaces/Iquery';
+import {useQueryContext} from '@/hooks/query/query-context';
+import {useSession} from 'next-auth/react';
+import useAxiosAuth from '@/services/auth/hooks/useAxiosAuth';
 import Typography from '@mui/material/Typography';
 import theme from '@/styles/theme';
-import DeleteIcon from '@mui/icons-material/Delete';
-import {useEffect, useState} from 'react';
-import {handleCreateQuery} from '@/handlers/query/handle-create-query';
-import {SelectedTable} from '@/interfaces/Iselectedtable';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-interface CreateQueryDialogProps {
+interface GetQueryDialogProps {
   handleClose: () => void;
   open: boolean;
+  projectId: number;
 }
 
-type Error = {
-  name?: string;
-  dbType?: string;
-};
-
-export default function CreateQueryDialog({ handleClose, open }: CreateQueryDialogProps) {
-  const { tables, setTables } = useTableContext();
-  const [selectedTables, setSelectedTables] = useState<SelectedTable[]>([{ tableId: null, columns: [] }]);
+export default function GetQueryDialog({ handleClose, open, projectId }: GetQueryDialogProps) {
+  const { queries, setQueries } = useQueryContext();
+  const { data: session, status } = useSession();
+  const axiosAuth = useAxiosAuth();
 
   useEffect(() => {
-    if (open) {
-      setSelectedTables([{ tableId: null, columns: [] }]);
+    if (session) {
+      getQueryByProject(Number(projectId))
+        .then((response) => {
+          return response;
+        })
+        .then((data) => {
+          const receivedQueries: Query[] = [];
+          for (let i = 0; i < data.length; i++) {
+            const query: Query = {
+              ...data[i],
+            };
+            receivedQueries.push(query);
+          }
+          setQueries(receivedQueries);
+        });
     }
-  }, [open]);
+  }, [status]);
 
-  const handleAddTable = () => {
-    setSelectedTables([...selectedTables, { tableId: null, columns: [] }]);
-  };
-
-  const handleTableChange = (index: number, value: number) => {
-    const newSelectedTables = [...selectedTables];
-    newSelectedTables[index].tableId = value;
-    newSelectedTables[index].columns = [];
-    setSelectedTables(newSelectedTables);
-  };
-
-  const handleColumnChange = (index: number, columnId: number) => {
-    const newSelectedTables = [...selectedTables];
-    if (!newSelectedTables[index].columns.includes(columnId)) {
-      newSelectedTables[index].columns = [...newSelectedTables[index].columns, columnId];
-    }
-    setSelectedTables(newSelectedTables);
-  };
-
-  const handleSave = () => {
-    const filteredTables = selectedTables
-      .filter(table => table.tableId !== null)
-      .map(table => ({
-        tableId: table.tableId,
-        columns: table.columns.filter(columnId => columnId !== null)
-      }));
-    setSelectedTables(filteredTables);
-    handleClose();
-  };
-
-  const handleRemove = (index: number) => {
-    const newSelectedTables = [...selectedTables];
-    newSelectedTables.splice(index, 1);
-    setSelectedTables(newSelectedTables);
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
   };
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='md'>
-      <Formik
-        initialValues={{
-          name: '',
-          dbType: 'SqlServer',
-        }}
-        validate={(values) => {
-          const errors: Error = {};
-          if (!values.name) {
-            errors.name = 'Nome obrigatório';
-          }
-          if (!values.dbType) {
-            errors.dbType = 'Tipo de BD obrigatório';
-          }
-          return errors;
-        }}
-        onSubmit={async (values, actions) => {
-          handleSave();
-          await handleCreateQuery(values, actions, selectedTables);
-          handleClose();
-        }}
-      >
-        {({ values, errors, touched, handleSubmit, setFieldValue }) => {
-          return (
-            <>
-              <DialogContent sx={{width: '585px'}}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                  <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
-                    <TextField
-                      label="Nome da Query"
-                      value={values.name}
-                      onChange={(event) => setFieldValue('name', event.target.value)}
-                      error={touched.name && !!errors.name}
-                      helperText={touched.name && errors.name}
-                      sx={{ width: '245px', marginBottom: '10px', marginTop: '10px' }}
-                      InputProps={{
-                        sx: { fontSize: '12px' }
-                      }}
-                      InputLabelProps={{
-                        sx: { backgroundColor: 'white', paddingX: '5px' }
-                      }}
-                    />
+      <DialogTitle align="center">
+        <Typography
+          fontWeight={700}
+          color={theme.palette.primary.main}
+        >
+          Histórico de Consultas
+        </Typography>
+      </DialogTitle>
 
-                    <TextField
-                      select
-                      label="Tipo do BD"
-                      value={values.dbType}
-                      onChange={(event) => setFieldValue('dbType', event.target.value)}
-                      error={touched.dbType && !!errors.dbType}
-                      helperText={touched.dbType && errors.dbType}
-                      sx={{ width: '245px', marginBottom: '10px', marginTop: '10px' }}
-                      InputProps={{ sx: { fontSize: '12px' } }}
-                      InputLabelProps={{ shrink: true, sx: { backgroundColor: 'white', paddingX: '5px' }}}
-                      disabled
-                    >
-                      <MenuItem key={1} value={'SqlServer'} sx={{fontSize: '12px'}}>
-                        Sql Server
-                      </MenuItem>
-                    </TextField>
-                  </Box>
-
-                  <Typography variant="h6" sx={{ marginTop: '10px', marginBottom: '10px', fontSize: '14px', fontWeight: 700, alignSelf: 'center' }}>
-                    Campos Retornados na Consulta
-                  </Typography>
-
-                  {selectedTables.map((table, index) => (
-                    <Box key={index} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
-                      <TextField
-                        select
-                        label="Tabela"
-                        value={table.tableId || ''}
-                        onChange={(event) => handleTableChange(index, Number(event.target.value))}
-                        sx={{ width: '245px', marginBottom: '10px', marginTop: '10px' }}
-                        InputProps={{
-                          sx: { fontSize: '12px' }
-                        }}
-                        InputLabelProps={{
-                          shrink: true,
-                          sx: { backgroundColor: 'white', paddingX: '5px' }
-                        }}
-                      >
-                        {tables.map((tableOption) => (
-                          <MenuItem key={tableOption.id} value={tableOption.id} sx={{fontSize: '12px'}}>
-                            {tableOption.alias}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-
-                      <TextField
-                        select
-                        label="Campo"
-                        onChange={(event) => handleColumnChange(index, Number(event.target.value))}
-                        sx={{ width: '245px', marginBottom: '10px', marginTop: '10px' }}
-                        InputProps={{ sx: { fontSize: '12px' } }}
-                        InputLabelProps={{ shrink: true, sx: { backgroundColor: 'white', paddingX: '5px' }}}
-                      >
-                        {table.tableId &&
-                          tables.find(t => t.id === table.tableId)?.xcolumns?.map((column) => (
-                            <MenuItem key={column.id} value={column.id} sx={{fontSize: '12px'}}>
-                              {column.alias}
-                            </MenuItem>
-                          ))}
-                        {table.tableId && 
-                          <MenuItem key={0} value={0} sx={{fontSize: '12px'}}>
-                          Todos
-                          </MenuItem>
-                        }
-                      </TextField>
-
-                      {index > 0 && (
-                        <IconButton
-                          onClick={() => handleRemove(index)}
-                          size="small"
-                          aria-label="Remover Campo"
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      )}
-                    </Box>
-                  ))}
-
-                  <Button
-                    onClick={handleAddTable}
-                    sx={{
-                      marginTop: '10px',
-                      alignSelf: 'center',
-                      fontSize: '12px',
-                      bgcolor: theme.palette.secondary.main,
-                      color: theme.palette.primary.dark,
-                    }}
-                  >
-                    Adicionar Novo Campo
-                  </Button>
-                </Box>
-              </DialogContent>
-
-              <DialogActions>
-                <Button onClick={handleClose}>Cancelar</Button>
-                <Button
-                  onClick={() => {
-                    handleSubmit();
-                  }}
+      <DialogContent sx={{ width: '700px', maxHeight: '350px' }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ padding: '10px' }}>
+                <Typography
+                  fontSize={'14px'}
+                  fontWeight={700}
                 >
-                  Gerar Query
-                </Button>
-              </DialogActions>
-            </>
-          );
-        }}
-      </Formik>
+                Nome
+                </Typography>
+              </TableCell>
+              <TableCell sx={{ padding: '10px' }}>
+                <Typography
+                  fontSize={'14px'}
+                  fontWeight={700}
+                >
+                Consulta
+                </Typography>
+              </TableCell>
+              <TableCell sx={{ padding: '10px' }}/>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {queries.map((query) => (
+              <TableRow key={query.id}>
+                <TableCell sx={{ padding: '10px' }}>
+                  <Typography fontSize={'12px'}>
+                    {query.name}
+                  </Typography>
+                </TableCell>
+                <TableCell sx={{ padding: '10px' }}>
+                  <Typography fontSize={'12px'}>
+                    {query.query}
+                  </Typography>
+                </TableCell>
+                <TableCell sx={{ padding: '10px' }}>
+                  <IconButton
+                    onClick={() => handleCopy(query.query)}
+                    size="small"
+                    sx={{ marginLeft: '8px' }}
+                  >
+                    <ContentCopyIcon fontSize="small" />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={handleClose}>Fechar</Button>
+      </DialogActions>
     </Dialog>
   );
 }
